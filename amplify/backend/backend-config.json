@@ -16,5 +16,20 @@
         }
       }
     }
+  },
+  "auth": {
+    "amplifytutorial79055f9d": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
+    }
   }
 }
