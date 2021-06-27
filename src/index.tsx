@@ -5,8 +5,12 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Amplify from "aws-amplify";
 import awsExports from "./aws-exports";
+import { messages } from "./i18n/amplify/message";
+import { I18n } from "aws-amplify";
 
 Amplify.configure(awsExports);
+I18n.putVocabularies(messages);
+I18n.setLanguage("fr");
 
 ReactDOM.render(
   <React.StrictMode>
