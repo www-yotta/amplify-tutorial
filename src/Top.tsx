@@ -1,4 +1,3 @@
-// TODO: tsxだrと型エラーが出て直ぐに解決できなかったので、一旦jsxで回避
 import React, { useEffect, useState, FC } from "react";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { createTodo } from "./graphql/mutations";
@@ -33,12 +32,8 @@ const Top: FC = () => {
 
   async function addTodo(values: any) {
     try {
-      // if (!formState.name || !formState.description) return;
-      // const todo = { ...formState };
-      // console.log("todo", todo);
       console.log("values", values);
       setTodos([...todos, values]);
-      // setFormState(initialState);
       await API.graphql(graphqlOperation(createTodo, { input: values }));
     } catch (err) {
       console.log("error creating todo:", err);

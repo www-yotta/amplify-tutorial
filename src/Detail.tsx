@@ -1,4 +1,3 @@
-// TODO: tsxだrと型エラーが出て直ぐに解決できなかったので、一旦jsxで回避
 import React, { useEffect, FC } from "react";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { updateTodo, deleteTodo } from "./graphql/mutations";
