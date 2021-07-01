@@ -1,4 +1,5 @@
 import React, { useEffect, useState, FC } from "react";
+import { Link } from "react-router-dom";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { createTodo } from "./graphql/mutations";
 import { listTodos } from "./graphql/queries";
@@ -19,11 +20,12 @@ const Top: FC = () => {
 
   async function fetchTodos() {
     try {
-      const todoData = await API.graphql(graphqlOperation(listTodos));
+      // TODO: 型定義がうまくいかないから一旦any
+      const todoData: any = await API.graphql(graphqlOperation(listTodos));
       console.log("todoData", todoData);
-      // TODO: 型定義がうまくいかない
-      // const todos = todoData.data.listTodos.items;
-      // setTodos(todos);
+
+      const todos = todoData.data.listTodos.items;
+      setTodos(todos);
     } catch (err) {
       console.log("error", err);
       console.log("error fetching todos");
@@ -32,9 +34,11 @@ const Top: FC = () => {
 
   async function addTodo(values: any) {
     try {
-      console.log("values", values);
-      setTodos([...todos, values]);
-      await API.graphql(graphqlOperation(createTodo, { input: values }));
+      const addedTodo: any = await API.graphql(
+        graphqlOperation(createTodo, { input: values })
+      );
+      console.log("addedTodo", addedTodo.data.createTodo);
+      setTodos([...todos, addedTodo.data.createTodo]);
     } catch (err) {
       console.log("error creating todo:", err);
     }
@@ -49,8 +53,10 @@ const Top: FC = () => {
       <button onClick={handleSubmit(addTodo)}>Create Todo</button>
       {todos.map((todo: any, index: number) => (
         <div key={todo?.id ? todo?.id : index}>
-          <p>{todo.name}</p>
-          <p>{todo.description}</p>
+          <Link to={`detail/${todo.id}`}>
+            <p>{todo.name}</p>
+            <p>{todo.description}</p>
+          </Link>
         </div>
       ))}
     </div>

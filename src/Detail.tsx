@@ -1,27 +1,30 @@
-import React, { useEffect, FC } from "react";
+import React, { useEffect, FC, useState } from "react";
+import { useParams } from "react-router-dom";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { updateTodo, deleteTodo } from "./graphql/mutations";
 import { getTodo } from "./graphql/queries";
 import { withAuthenticator } from "@aws-amplify/ui-react";
+import { useForm } from "react-hook-form";
 
 import awsExports from "./aws-exports";
 Amplify.configure(awsExports);
 
 const Detail: FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const { register, handleSubmit, setValue } = useForm();
+
   useEffect(() => {
     getDetail();
   }, []);
 
   async function getDetail() {
     try {
-      const oneTodo1 = await API.graphql({
-        query: getTodo,
-        variables: { id: "6612b" },
-      });
-      const oneTodo2 = await API.graphql(
-        graphqlOperation(getTodo, { id: "1" })
+      const oneTodo2: any = await API.graphql(
+        graphqlOperation(getTodo, { id })
       );
-      console.log("oneTodo1", oneTodo1);
+      setValue("name", oneTodo2.data.getTodo.name);
+      setValue("description", oneTodo2.data.getTodo.description);
+      setValue("flag", oneTodo2.data.getTodo.flag);
       console.log("oneTodo2", oneTodo2);
     } catch (err) {
       console.log("error", err);
@@ -29,11 +32,9 @@ const Detail: FC = () => {
     }
   }
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (input: any) => {
     const updatedTodo = await API.graphql(
-      graphqlOperation(updateTodo, {
-        input: { id: 1, name: "ぐらふーー", flag: false },
-      })
+      graphqlOperation(updateTodo, { input })
     );
     console.log("updatedTodo", updatedTodo);
   };
@@ -50,8 +51,12 @@ const Detail: FC = () => {
   return (
     <div>
       <h2>Amplify Todo Detail</h2>
-      <button onClick={handleUpdate}>update!!</button>
-      <button onClick={handleDelete}>delete!!</button>
+      <input {...register("id")} type="hidden" defaultValue={id} />
+      <input {...register("name")} placeholder="Name" />
+      <input {...register("description")} placeholder="Description" />
+      <input {...register("flag")} type="checkbox" />
+      <button onClick={handleSubmit(handleUpdate)}>update!!</button>
+      <button onClick={handleSubmit(handleDelete)}>delete!!</button>
     </div>
   );
 };
