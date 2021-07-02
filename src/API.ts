@@ -118,6 +118,81 @@ export type ModelTodoConnection = {
   nextToken?: string | null,
 };
 
+export type SearchableTodoFilterInput = {
+  id?: SearchableIDFilterInput | null,
+  name?: SearchableStringFilterInput | null,
+  description?: SearchableStringFilterInput | null,
+  flag?: SearchableBooleanFilterInput | null,
+  and?: Array< SearchableTodoFilterInput | null > | null,
+  or?: Array< SearchableTodoFilterInput | null > | null,
+  not?: SearchableTodoFilterInput | null,
+};
+
+export type SearchableIDFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableStringFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableBooleanFilterInput = {
+  eq?: boolean | null,
+  ne?: boolean | null,
+};
+
+export type SearchableTodoSortInput = {
+  field?: SearchableTodoSortableFields | null,
+  direction?: SearchableSortDirection | null,
+};
+
+export enum SearchableTodoSortableFields {
+  id = "id",
+  name = "name",
+  description = "description",
+  flag = "flag",
+}
+
+
+export enum SearchableSortDirection {
+  asc = "asc",
+  desc = "desc",
+}
+
+
+export type SearchableTodoConnection = {
+  __typename: "SearchableTodoConnection",
+  items?:  Array<Todo | null > | null,
+  nextToken?: string | null,
+  total?: number | null,
+};
+
 export type CreateTodoMutationVariables = {
   input: CreateTodoInput,
   condition?: ModelTodoConditionInput | null,
@@ -204,6 +279,31 @@ export type ListTodosQuery = {
       updatedAt: string,
     } | null > | null,
     nextToken?: string | null,
+  } | null,
+};
+
+export type SearchTodosQueryVariables = {
+  filter?: SearchableTodoFilterInput | null,
+  sort?: SearchableTodoSortInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  from?: number | null,
+};
+
+export type SearchTodosQuery = {
+  searchTodos?:  {
+    __typename: "SearchableTodoConnection",
+    items?:  Array< {
+      __typename: "Todo",
+      id: string,
+      name: string,
+      description?: string | null,
+      flag: boolean,
+      createdAt: string,
+      updatedAt: string,
+    } | null > | null,
+    nextToken?: string | null,
+    total?: number | null,
   } | null,
 };
 

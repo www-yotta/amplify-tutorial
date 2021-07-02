@@ -2,7 +2,7 @@ import React, { useEffect, useState, FC } from "react";
 import { Link } from "react-router-dom";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { createTodo } from "./graphql/mutations";
-import { listTodos } from "./graphql/queries";
+import { listTodos, searchTodos } from "./graphql/queries";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { useForm } from "react-hook-form";
 
@@ -32,7 +32,7 @@ const Top: FC = () => {
     }
   }
 
-  async function addTodo(values: any) {
+  async function addTodo({ search, ...values }: any) {
     try {
       const addedTodo: any = await API.graphql(
         graphqlOperation(createTodo, { input: values })
@@ -44,9 +44,21 @@ const Top: FC = () => {
     }
   }
 
+  const handleSearch = async ({ search }: any) => {
+    const result: any = await API.graphql(
+      graphqlOperation(searchTodos, {
+        filter: { name: { wildcard: `*${search}*` } },
+      })
+    );
+    setTodos(result.data.searchTodos.items);
+    console.log("result", result);
+  };
+
   return (
     <div>
       <h2>Amplify Todos</h2>
+      <input {...register("search")} placeholder="検索" />
+      <button onClick={handleSubmit(handleSearch)}>検索</button>
       <input {...register("name")} placeholder="Name" />
       <input {...register("description")} placeholder="Description" />
       <input {...register("flag")} type="checkbox" />
